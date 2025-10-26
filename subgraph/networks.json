@@ -1,8 +1,8 @@
 {
   "base-sepolia": {
     "Lit3Ledger": {
-      "address": "0x4df141a32eA17Cf40796568355be9D4Ef590124A",
-      "startBlock": 32394958
+      "address": "0xC88408A3a96Db318C5C79B0F8977eF0E7FE09f22",
+      "startBlock": 32859043
     }
   },
   "base": {

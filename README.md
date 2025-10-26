@@ -22,14 +22,14 @@ A Solidity smart contract for archiving versioned metadata of literary artifacts
 
 ```
 ├── src/
-│   └── Lit3Ledger.sol              # Main contract
+│   └── Lit3Ledger.sol               # Main contract
 ├── script/
-│   ├── DeployLit3Ledger.s.sol      # Deployment script
+│   ├── DeployLit3Ledger.s.sol       # Deployment script
 │   └── InteractWithLit3.s.sol       # Interaction script for queries/archiving
 ├── test/
 │   └── Lit3LedgerTest.t.sol         # Comprehensive test suite
 ├── scripts/
-│   └── normalize-and-hash.js        # Text normalization & SHA-256 hashing utility
+│   └── hnp1.js                      # Text normalization & SHA-256 hashing utility
 ├── .env.example                     # Environment variables template
 ├── deploy-lit3ledger.sh             # Multi-network deployment script
 ├── archive-entry.sh                 # Archive new entries with optional hashing
@@ -129,66 +129,90 @@ The script will:
 
 ### Archive New Entry
 
-The `archive-entry.sh` script supports flexible command-line usage for all scenarios. Optional parameters are handled gracefully with sensible defaults.
+The `archive-entry.sh` script uses **named arguments (flags)**, making it clean and easy to use with optional parameters.
 
-#### Basic Usage (No Optional Parameters)
+#### Command Syntax
 
-Archive an entry without NFT integration or content hashing:
-
-```bash
-./archive-entry.sh base-sepolia "Chapter One" "Location" "Timestamp 1" "Timestamp 2" "Entry note"
-```
-
-#### With Optional Parameters
-
-All optional parameters are positional but can be omitted:
+The script requires the `--network` flag, but all other parameters are optional and can be passed in any order.
 
 ```bash
-./archive-entry.sh <network> <title> <source> <timestamp1> <timestamp2> <curator_note> [nft_address] [nft_id] [text_file]
+./archive-entry.sh --network <network> [OPTIONAL FLAGS...]
 ```
 
-**Examples:**
+#### Optional Flags
 
-Archive with NFT integration only:
+| Flag (Short/Long) | Description | Default Value in Contract |
+| :--- | :--- | :--- |
+| **-t, --title** | Entry title (e.g., "Chapter One") | `""` (empty string) |
+| **-s, --source** | Source/location of the entry | `""` (empty string) |
+| **-a, --timestamp1** | First timestamp (e.g., "2025-10-11 14:30:00 UTC") | `""` (empty string) |
+| **-b, --timestamp2** | Second timestamp (e.g., "Lanka Time") | `""` (empty string) |
+| **-c, --curator-note** | Observations from the Curator | `""` (empty string) |
+| **-f, --nft-address** | NFT contract address (e.g., 0x...) | `0x0...0` (zero address) |
+| **-d, --nft-id** | NFT token ID | `0` |
+| **-l, --text-file** | Path to a file for content hashing (requires Node.js) | `0x0...0` (zero hash) |
+| **-x, --permaweb-link** | IPFS/Arweave link (e.g., ipfs://Qm...) | `""` (empty string) |
+| **-p, --license** | License declaration (e.g., 'CC BY-SA 4.0') | `""` (empty string) |
+
+#### Examples
+
+**Basic Usage (Minimum Required: Network)**
+Archive an entry using only the required network flag, plus a title and note for context.
+
 ```bash
-./archive-entry.sh base-sepolia "Chapter One" "Location" "Timestamp 1" "Timestamp 2" "Entry note" 0x1234567890abcdef1234567890abcdef12345678 42
+./archive-entry.sh -n base-sepolia -t "Chapter One" -c "First entry"
 ```
 
-Archive with text file hashing only (NFT omitted):
+**With NFT Integration**
+Archive an entry and associate it with a specific NFT. Note that unused flags (`--text-file`, etc.) are simply omitted.
+
 ```bash
-./archive-entry.sh base-sepolia "Chapter One" "Location" "Timestamp 1" "Timestamp 2" "Entry note" none 0 chapter-one.md
+./archive-entry.sh \
+  --network base-sepolia \
+  --title "Chapter One" \
+  --source "Archive Node" \
+  --timestamp1 "2025-10-11 14:30:00 UTC" \
+  --curator-note "First entry" \
+  --nft-address 0x1234567890abcdef1234567890abcdef12345678 \
+  --nft-id 42
 ```
 
-Archive with NFT and text file:
+**With Content Hashing (Permanence Framework)**
+Archive an entry, compute a content hash from a local file, and provide a permaweb link and license.
+
 ```bash
-./archive-entry.sh base-sepolia "Chapter One" "Location" "Timestamp 1" "Timestamp 2" "Entry note" 0x1234...5678 42 chapter-one.md
+./archive-entry.sh \
+  -n base-sepolia \
+  -t "Chapter One" \
+  -c "Entry note with hash" \
+  -l chapter-one.md \
+  -x "ipfs://QmTest123" \
+  -p "CC BY-SA 4.0"
 ```
 
-#### Optional Parameter Details
+**Full Entry**
+Archive an entry with all optional fields.
 
-**`nft_address`** (optional)
-- Pass an Ethereum address (0x...) to link an NFT
-- Pass `none` or `0x0` to skip NFT integration
-- Invalid addresses are automatically converted to zero address
-- Default: `none` (no NFT)
-
-**`nft_id`** (optional)
-- Pass a number (0, 1, 2, etc.) for the NFT token ID
-- Only meaningful if `nft_address` is valid
-- Default: `0` (no token ID)
-
-**`text_file`** (optional)
-- Path to a markdown file (e.g., `chapter-one.md`)
-- The script will normalize the text and compute SHA-256 hash
-- Requires Node.js to be installed
-- If omitted or file not found, uses zero-hash
-- Default: omitted (zero-hash)
+```bash
+./archive-entry.sh \
+  --network base-sepolia \
+  --title "Introduction" \
+  --source "Book 0" \
+  --timestamp1 "2025-10-11 UTC" \
+  --timestamp2 "2025-12-11 UTC" \
+  --curator-note "First entry" \
+  --nft-address 0xfC295DBCbB9CCdA53B152AA3fc64dB84d6C538fF \
+  --nft-id 0 \
+  --text-file placeholder.md \
+  --permaweb-link "ipfs://bafkreihrm3tvrubern7kkpxr65ta2zu2cmdkfbfqmcth4eoefly37ke4xq" \
+  --license "CC BY-NC-SA 4.0"
+```
 
 ---
 
 ### Text Normalization & Hashing
 
-The `normalize-and-hash.js` utility applies strict normalization for chapter-style text:
+The `hnp1.js` utility applies strict normalization for chapter-style text:
 
 1. **BOM removal** - Strips Byte Order Mark if present
 2. **Unicode normalization** - Converts to NFC form (composed characters)
@@ -203,7 +227,7 @@ This ensures that the same canonical text always produces the same hash, enablin
 
 **Manual hashing:**
 ```bash
-node scripts/normalize-and-hash.js /path/to/chapter.md
+node scripts/hnp1.js /path/to/chapter.md
 ```
 
 Output: `0x<64-char-hex-hash>`
@@ -238,39 +262,50 @@ All available query commands:
 
 ### Update Entry
 
-The `archive-updated-entry.sh` script supports flexible command-line usage for all scenarios. Optional parameters are handled gracefully with sensible defaults.
+The `archive-updated-entry.sh` script also uses **named arguments (flags)**, requiring the network and the index of the entry to be deprecated.
 
-#### Basic Usage (No Optional Parameters)
+#### Command Syntax
 
-Update entry without NFT integration or content hashing:
+The script requires the `--network` and `--deprecate-index` flags. All other parameters are optional and can be passed in any order.
 
 ```bash
-./archive-updated-entry.sh base-sepolia 0 "Chapter One v2" "Location v2" "Timestamp 1 v2" "Timestamp 2 v2" "Entry note v2"
+./archive-updated-entry.sh --network <network> --deprecate-index <index> [OPTIONAL FLAGS...]
 ```
 
-#### With Optional Parameters
+#### Optional Flags
 
-All optional parameters are positional but can be omitted:
+The optional flags are the same as `archive-entry.sh` (see table above).
+
+#### Examples
+
+**Basic Update (Minimum Required: Network and Index)**
+Update an entry, changing only the title and curator note.
 
 ```bash
-./archive-updated-entry.sh <network> <deprecate_index> <title> <source> <timestamp1> <timestamp2> <curator_note> [nft_address] [nft_id] [text_file]
+./archive-updated-entry.sh \
+  -n base-sepolia \
+  -i 5 \
+  -t "Chapter One v2" \
+  -c "Updated with corrections"
 ```
 
-**Examples:**
+**Full Update**
+Update an entry with all optional fields.
 
-Update entry with NFT integration only:
 ```bash
-./archive-updated-entry.sh base-sepolia 0 "Chapter One v2" "Location v2" "Timestamp 1 v2" "Timestamp 2 v2" "Entry note v2" 0x1234567890abcdef1234567890abcdef12345678 42
-```
-
-Update entry with text file hashing only (NFT omitted):
-```bash
-./archive-updated-entry.sh base-sepolia 0 "Chapter One v2" "Location" "Timestamp 1" "Timestamp 2" "Entry note" none 0 chapter-one-v2.md
-```
-
-Update entry with NFT and text file:
-```bash
-./archive-updated-entry.sh base-sepolia 0 "Chapter One v2" "Location" "Timestamp 1" "Timestamp 2" "Entry note" 0x1234567890abcdef1234567890abcdef12345678 42 chapter-one-v2.md
+./archive-updated-entry.sh \
+  --network base-sepolia \
+  --deprecate-index 0 \
+  --title "Introduction - Version 2" \
+  --source "Book 0" \
+  --timestamp1 "2025-10-11 UTC" \
+  --timestamp2 "2025-12-11 UTC" \
+  --curator-note "First entry" \
+  --nft-address 0xfC295DBCbB9CCdA53B152AA3fc64dB84d6C538fF \
+  --nft-id 0 \
+  --text-file placeholder.md \
+  --permaweb-link "ipfs://bafkreihrm3tvrubern7kkpxr65ta2zu2cmdkfbfqmcth4eoefly37ke4xq" \
+  --license "CC BY-NC-SA 4.0"
 ```
 
 ---
@@ -281,24 +316,29 @@ Update entry with NFT and text file:
 
 ```solidity
 struct Entry {
+    // Ledger Framework items
     string title;           // Entry title
     string source;          // Source/location of the entry
     string timestamp1;      // First timestamp (e.g., reception time)
     string timestamp2;      // Second timestamp (e.g., source transmission time)
     string curatorNote;     // Curator observations
     bool deprecated;        // Deprecation flag
+    // Token Framework items
     uint256 versionIndex;   // Version number (auto-incremented)
     address nftAddress;     // NFT contract address (0x0 if none)
     uint256 nftId;          // NFT token ID (0 if none)
+    // Permanence Framework items
     bytes32 contentHash;    // SHA-256 hash of canonical text
+    string permawebLink;    // Decentralized storage reference
+    string license;         // License declaration
 }
 ```
 
 ### Main Functions
 
 **Archiving:**
-- `archiveEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash)` - Add new entry (curator only)
-- `archiveUpdatedEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, deprecateIndex)` - Create new version and deprecate old (curator only)
+- `archiveEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, permawebLink, license)` - Add new entry (curator only)
+- `archiveUpdatedEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, permawebLink, license, deprecateIndex)` - Create new version and deprecate old (curator only)
 
 **Querying:**
 - `getEntry(uint256 index)` - Get entry by index

@@ -6,9 +6,9 @@ dataSources:
     name: Lit3Ledger
     network: base-sepolia  # Set the network to base or base-sepolia
     source:
-      address: "0x4df141a32eA17Cf40796568355be9D4Ef590124A"  # Replace with your deployed contract address
+      address: "0xC88408A3a96Db318C5C79B0F8977eF0E7FE09f22"  # Replace with your deployed contract address
       abi: Lit3Ledger
-      startBlock: 32394958  # Replace with your deployment block
+      startBlock: 32859043  # Replace with your deployment block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -22,7 +22,7 @@ dataSources:
         - name: Lit3Ledger
           file: ./abis/Lit3Ledger.json
       eventHandlers:
-        - event: EntryArchived(indexed uint256,string,string,string,string,string,uint256,address,uint256,bytes32)
+        - event: EntryArchived(indexed uint256,string,string,string,string,string,uint256,address,uint256,bytes32,string,string)
           handler: handleEntryArchived
         - event: EntryDeprecated(indexed uint256,indexed uint256,string,uint256)
           handler: handleEntryDeprecated
