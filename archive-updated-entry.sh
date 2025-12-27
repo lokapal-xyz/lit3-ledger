@@ -40,15 +40,15 @@ show_usage() {
     echo "Optional Arguments (Permanence Framework):"
     echo "  -l, --text-file          : Path to text file for hashing (omit to skip hashing)"
     echo "  -x, --permaweb-link      : IPFS/Arweave link (e.g., ipfs://Qm..., empty for none)"
-    echo "  -p, --license            : License declaration (e.g., 'CC BY-SA 4.0', empty for none)"
+    echo "  -p, --canon-metadata            : Canon metadata declaration (e.g., 'CC BY-SA 4.0', empty for none)"
     echo ""
     echo "Examples:"
     echo "  # Basic update (only required fields + title/note)"
     echo "  $0 -n base-sepolia -i 5 -t \"Chapter One v2\" -c \"Updated with corrections\""
     echo ""
-    echo "  # Update with new content hash and license"
+    echo "  # Update with new content hash and canon metadata"
     echo "  $0 --network base-sepolia --deprecate-index 0 \\"
-    echo "     --title \"Chapter One v2\" --text-file chapter-one-v2.md --license \"CC BY-SA 4.0\""
+    echo "     --title \"Chapter One v2\" --text-file chapter-one-v2.md --canon-metadata \"CC BY-SA 4.0\""
     echo ""
     exit 1
 }
@@ -75,10 +75,10 @@ NFT_ADDRESS="none"
 NFT_ID=0
 TEXT_FILE=""
 PERMAWEB_LINK=""
-LICENSE=""
+CANON_METADATA=""
 
 # Parse named arguments using getopt
-OPTIONS=$(getopt -o n:i:t:s:a:b:c:f:d:l:x:p: --long network:,deprecate-index:,title:,source:,timestamp1:,timestamp2:,curator-note:,nft-address:,nft-id:,text-file:,permaweb-link:,license: -n 'archive-updated-entry.sh' -- "$@")
+OPTIONS=$(getopt -o n:i:t:s:a:b:c:f:d:l:x:p: --long network:,deprecate-index:,title:,source:,timestamp1:,timestamp2:,curator-note:,nft-address:,nft-id:,text-file:,permaweb-link:,canon-metadata: -n 'archive-updated-entry.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
     show_usage
@@ -99,7 +99,7 @@ while true; do
         -d|--nft-id) NFT_ID=$2; shift 2 ;;
         -l|--text-file) TEXT_FILE=$2; shift 2 ;;
         -x|--permaweb-link) PERMAWEB_LINK=$2; shift 2 ;;
-        -p|--license) LICENSE=$2; shift 2 ;;
+        -p|--canon-metadata) CANON_METADATA=$2; shift 2 ;;
         --) shift; break ;;
         *) echo -e "${RED}Internal error: Unknown option $1${NC}"; show_usage ;;
     esac
@@ -203,14 +203,14 @@ if [[ "$NFT_ADDRESS" != "0x0000000000000000000000000000000000000000" || "$NFT_ID
     echo -e "${YELLOW}  NFT ID:${NC} $NFT_ID"
     echo ""
 fi
-if [[ "$CONTENT_HASH" != "0x0000000000000000000000000000000000000000000000000000000000000000" || -n "$PERMAWEB_LINK" || -n "$LICENSE" ]]; then
+if [[ "$CONTENT_HASH" != "0x0000000000000000000000000000000000000000000000000000000000000000" || -n "$PERMAWEB_LINK" || -n "$CANON_METADATA" ]]; then
     echo -e "${BLUE}Permanence Framework:${NC}"
     echo -e "${YELLOW}  Content Hash:${NC} $CONTENT_HASH"
     if [ -n "$PERMAWEB_LINK" ]; then
         echo -e "${YELLOW}  Permaweb Link:${NC} $PERMAWEB_LINK"
     fi
-    if [ -n "$LICENSE" ]; then
-        echo -e "${YELLOW}  License:${NC} $LICENSE"
+    if [ -n "$CANON_METADATA" ]; then
+        echo -e "${YELLOW}  Canon metadata:${NC} $CANON_METADATA"
     fi
     echo ""
 fi
@@ -236,7 +236,7 @@ export NFT_ADDRESS="$NFT_ADDRESS"
 export NFT_ID="$NFT_ID"
 export CONTENT_HASH="$CONTENT_HASH"
 export PERMAWEB_LINK="$PERMAWEB_LINK"
-export LICENSE="$LICENSE"
+export CANON_METADATA="$CANON_METADATA"
 export DEPRECATE_INDEX="$DEPRECATE_INDEX"
 
 # Execute the forge script

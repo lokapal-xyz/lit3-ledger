@@ -24,8 +24,6 @@ subgraph/node_modules/
 subgraph/package-lock.json
 subgraph/pnpm-lock.yaml
 
-# Shard Time Calculator
-shard-time.py
-
-# Placeholder text
-placeholder.md
+# Utils
+utils/
+chapters/

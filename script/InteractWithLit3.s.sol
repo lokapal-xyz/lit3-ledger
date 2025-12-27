@@ -71,7 +71,7 @@ contract InteractWithLit3 is Script {
         uint256 nftId = vm.envUint("NFT_ID");
         bytes32 contentHash = vm.envBytes32("CONTENT_HASH");
         string memory permawebLink = vm.envOr("PERMAWEB_LINK", string(""));
-        string memory license = vm.envOr("LICENSE", string(""));
+        string memory canonMetadata = vm.envOr("CANON_METADATA", string(""));
 
         console.log("=== ARCHIVING ENTRY ===");
         console.log("Title:", title);
@@ -83,7 +83,7 @@ contract InteractWithLit3 is Script {
         console.log("NFT ID:", nftId);
         console.logBytes32(contentHash);
         console.log("Permaweb Link:", permawebLink);
-        console.log("License:", license);
+        console.log("Canon metadata:", canonMetadata);
 
         vm.startBroadcast();
         lit3.archiveEntry(
@@ -96,7 +96,7 @@ contract InteractWithLit3 is Script {
             nftId,
             contentHash,
             permawebLink,
-            license
+            canonMetadata
         );
         vm.stopBroadcast();
 
@@ -117,14 +117,14 @@ contract InteractWithLit3 is Script {
         uint256 nftId = vm.envUint("NFT_ID");
         bytes32 contentHash = vm.envBytes32("CONTENT_HASH");
         string memory permawebLink = vm.envOr("PERMAWEB_LINK", string(""));
-        string memory license = vm.envOr("LICENSE", string(""));
+        string memory canonMetadata = vm.envOr("CANON_METADATA", string(""));
         uint256 deprecateIndex = vm.envUint("DEPRECATE_INDEX");
 
         console.log("=== ARCHIVING UPDATED ENTRY ===");
         console.log("Title:", title);
         console.log("Deprecating index:", deprecateIndex);
         console.log("Permaweb Link:", permawebLink);
-        console.log("License:", license);
+        console.log("Canon metadata:", canonMetadata);
 
         vm.startBroadcast();
         lit3.archiveUpdatedEntry(
@@ -137,7 +137,7 @@ contract InteractWithLit3 is Script {
             nftId,
             contentHash,
             permawebLink,
-            license,
+            canonMetadata,
             deprecateIndex
         );
         vm.stopBroadcast();
@@ -242,7 +242,7 @@ contract InteractWithLit3 is Script {
         console.log("NFT ID:", entry.nftId);
         console.logBytes32(entry.contentHash);
         console.log("Permaweb Link:", entry.permawebLink);
-        console.log("License:", entry.license);
+        console.log("Canon metadata:", entry.canonMetadata);
     }
 
     /**
@@ -253,8 +253,8 @@ contract InteractWithLit3 is Script {
         console.log("Source:", entry.source);
         console.log("Version:", entry.versionIndex);
         console.log("Deprecated:", entry.deprecated);
-        if (bytes(entry.license).length > 0) {
-            console.log("License:", entry.license);
+        if (bytes(entry.canonMetadata).length > 0) {
+            console.log("Canon metadata:", entry.canonMetadata);
         }
     }
 

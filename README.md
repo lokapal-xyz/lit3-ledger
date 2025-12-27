@@ -29,7 +29,8 @@ A Solidity smart contract for archiving versioned metadata of literary artifacts
 ├── test/
 │   └── Lit3LedgerTest.t.sol         # Comprehensive test suite
 ├── scripts/
-│   └── hnp1.js                      # Text normalization & SHA-256 hashing utility
+│   ├── hnp1.js                      # Hashed Normalization Protocol - Version 1
+│   └── hnp2.js                      # Hashed Normalization Protocol - Version 2
 ├── .env.example                     # Environment variables template
 ├── deploy-lit3ledger.sh             # Multi-network deployment script
 ├── archive-entry.sh                 # Archive new entries with optional hashing
@@ -152,7 +153,7 @@ The script requires the `--network` flag, but all other parameters are optional 
 | **-d, --nft-id** | NFT token ID | `0` |
 | **-l, --text-file** | Path to a file for content hashing (requires Node.js) | `0x0...0` (zero hash) |
 | **-x, --permaweb-link** | IPFS/Arweave link (e.g., ipfs://Qm...) | `""` (empty string) |
-| **-p, --license** | License declaration (e.g., 'CC BY-SA 4.0') | `""` (empty string) |
+| **-p, --canon-metadata** | Canon metadata declaration (e.g., 'CC BY-SA 4.0 | HNP-1') | `""` (empty string) |
 
 #### Examples
 
@@ -178,7 +179,7 @@ Archive an entry and associate it with a specific NFT. Note that unused flags (`
 ```
 
 **With Content Hashing (Permanence Framework)**
-Archive an entry, compute a content hash from a local file, and provide a permaweb link and license.
+Archive an entry, compute a content hash from a local file, and provide a permaweb link and canon metadata.
 
 ```bash
 ./archive-entry.sh \
@@ -187,7 +188,7 @@ Archive an entry, compute a content hash from a local file, and provide a permaw
   -c "Entry note with hash" \
   -l chapter-one.md \
   -x "ipfs://QmTest123" \
-  -p "CC BY-SA 4.0"
+  -p "CC BY-SA 4.0 | HNP-1"
 ```
 
 **Full Entry**
@@ -205,7 +206,7 @@ Archive an entry with all optional fields.
   --nft-id 0 \
   --text-file placeholder.md \
   --permaweb-link "ipfs://bafkreihrm3tvrubern7kkpxr65ta2zu2cmdkfbfqmcth4eoefly37ke4xq" \
-  --license "CC BY-NC-SA 4.0"
+  --canon-metadata "CC BY-NC-SA 4.0 | HNP-1"
 ```
 
 ---
@@ -230,7 +231,9 @@ This ensures that the same canonical text always produces the same hash, enablin
 node scripts/hnp1.js /path/to/chapter.md
 ```
 
-Output: `0x<64-char-hex-hash>`
+- **Output:** `0x<64-char-hex-hash>`
+
+> If you are using Markdown, consider using `hnp2.js`. For more information, read the article [Foundry](https://book.getfoundry.sh/getting-started/installation).
 
 ---
 
@@ -305,7 +308,7 @@ Update an entry with all optional fields.
   --nft-id 0 \
   --text-file placeholder.md \
   --permaweb-link "ipfs://bafkreihrm3tvrubern7kkpxr65ta2zu2cmdkfbfqmcth4eoefly37ke4xq" \
-  --license "CC BY-NC-SA 4.0"
+  --canon-metadata "CC BY-NC-SA 4.0 | HNP-1"
 ```
 
 ---
@@ -323,22 +326,22 @@ struct Entry {
     string timestamp2;      // Second timestamp (e.g., source transmission time)
     string curatorNote;     // Curator observations
     bool deprecated;        // Deprecation flag
-    // Token Framework items
     uint256 versionIndex;   // Version number (auto-incremented)
+    // Token Framework items
     address nftAddress;     // NFT contract address (0x0 if none)
     uint256 nftId;          // NFT token ID (0 if none)
     // Permanence Framework items
     bytes32 contentHash;    // SHA-256 hash of canonical text
     string permawebLink;    // Decentralized storage reference
-    string license;         // License declaration
+    string canonMetadata;   // Canon metadata declaration
 }
 ```
 
 ### Main Functions
 
 **Archiving:**
-- `archiveEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, permawebLink, license)` - Add new entry (curator only)
-- `archiveUpdatedEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, permawebLink, license, deprecateIndex)` - Create new version and deprecate old (curator only)
+- `archiveEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, permawebLink, canonMetadata)` - Add new entry (curator only)
+- `archiveUpdatedEntry(title, source, timestamp1, timestamp2, curatorNote, nftAddress, nftId, contentHash, permawebLink, canonMetadata, deprecateIndex)` - Create new version and deprecate old (curator only)
 
 **Querying:**
 - `getEntry(uint256 index)` - Get entry by index
@@ -496,12 +499,6 @@ The authors and contributors are not responsible for any losses or damages resul
 
 MIT License - see LICENSE file for details
 
-## Support
-
-- Create an issue for bugs or feature requests
-- Check existing issues before creating new ones
-- Provide detailed information including network, transaction hashes, and error messages
-
 ---
 
-Built with Foundry by lokapal.eth
+**Built by lokapal.eth**

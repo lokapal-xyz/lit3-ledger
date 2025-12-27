@@ -38,7 +38,7 @@ contract Lit3Ledger {
         // Permanence Framework items
         bytes32 contentHash;
         string permawebLink;
-        string license;
+        string canonMetadata;
     }
 
 
@@ -65,7 +65,7 @@ contract Lit3Ledger {
         uint256 nftId,
         bytes32 contentHash,
         string permawebLink,
-        string license
+        string canonMetadata
     );
 
     event EntryDeprecated(
@@ -117,7 +117,7 @@ contract Lit3Ledger {
      * @param _nftId Token ID of associated NFT (0 if none)
      * @param _contentHash SHA-256 hash of the canonical content (0x0 if not provided)
      * @param _permawebLink Decentralized storage reference (e.g., ipfs://..., ar://..., empty if none)
-     * @param _license License declaration (e.g., "CC BY-SA 4.0", "All Rights Reserved", empty if not declared)
+     * @param _canonMetadata Canon metadata declaration (e.g., "CC BY-SA 4.0", "All Rights Reserved", empty if not declared)
      */
     function archiveEntry(
         string memory _title,
@@ -129,7 +129,7 @@ contract Lit3Ledger {
         uint256 _nftId,
         bytes32 _contentHash,
         string memory _permawebLink,
-        string memory _license
+        string memory _canonMetadata
     ) public onlyCurator {
         entries.push(Entry(
             _title,
@@ -143,7 +143,7 @@ contract Lit3Ledger {
             _nftId,
             _contentHash,
             _permawebLink,
-            _license
+            _canonMetadata
         ));
 
         emit EntryArchived(
@@ -158,7 +158,7 @@ contract Lit3Ledger {
             _nftId,
             _contentHash,
             _permawebLink,
-            _license
+            _canonMetadata
         );
     }
 
@@ -173,7 +173,7 @@ contract Lit3Ledger {
      * @param _nftId Token ID of associated NFT (0 if none)
      * @param _contentHash SHA-256 hash of canonical content (0x0 if not provided)
      * @param _permawebLink Decentralized storage reference (empty if none)
-     * @param _license License declaration (empty if not declared)
+     * @param _canonMetadata Canon metadata declaration (empty if not declared)
      * @param _deprecateIndex Index of the entry to deprecate and replace
      */
     function archiveUpdatedEntry(
@@ -186,7 +186,7 @@ contract Lit3Ledger {
         uint256 _nftId,
         bytes32 _contentHash,
         string memory _permawebLink,
-        string memory _license,
+        string memory _canonMetadata,
         uint256 _deprecateIndex
     ) public onlyCurator {
         if (_deprecateIndex >= entries.length) {
@@ -217,7 +217,7 @@ contract Lit3Ledger {
             _nftId,
             _contentHash,
             _permawebLink,
-            _license
+            _canonMetadata
         ));
 
         uint256 newIndex = entries.length - 1;
@@ -241,7 +241,7 @@ contract Lit3Ledger {
             _nftId,
             _contentHash,
             _permawebLink,
-            _license
+            _canonMetadata
         );
     }
 

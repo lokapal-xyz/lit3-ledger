@@ -17,7 +17,7 @@ contract Lit3LedgerTest is Test {
     string constant TEST_CURATOR_NOTE = "Initial entry of the narrative";
     bytes32 constant TEST_CONTENT_HASH = 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef;
     string constant TEST_PERMAWEB_LINK = "ipfs://QmTest123456789";
-    string constant TEST_LICENSE = "CC BY-SA 4.0";
+    string constant TEST_CANON_METADATA = "CC BY-SA 4.0";
     address constant TEST_NFT_ADDRESS = 0x0000000000000000000000000000000000000000;
     uint256 constant TEST_NFT_ID = 0;
 
@@ -55,7 +55,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
 
         assertEq(lit3Ledger.getTotalEntries(), 1);
@@ -72,7 +72,7 @@ contract Lit3LedgerTest is Test {
         assertEq(entry.nftId, TEST_NFT_ID);
         assertEq(entry.contentHash, TEST_CONTENT_HASH);
         assertEq(entry.permawebLink, TEST_PERMAWEB_LINK);
-        assertEq(entry.license, TEST_LICENSE);
+        assertEq(entry.canonMetadata, TEST_CANON_METADATA);
     }
 
     function test_ArchiveEntry_RevertWhen_NotCurator() public {
@@ -89,7 +89,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
     }
 
@@ -109,7 +109,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
         
         lit3Ledger.archiveEntry(
@@ -122,7 +122,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
     }
 
@@ -143,14 +143,14 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
 
         // Archive updated entry
         string memory updatedNote = "Corrected entry with additional context";
         bytes32 updatedHash = 0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890;
         string memory updatedLink = "ipfs://QmUpdated987654321";
-        string memory updatedLicense = "CC BY-NC-SA 4.0";
+        string memory updatedCanon = "CC BY-NC-SA 4.0";
 
         vm.prank(curator);
         lit3Ledger.archiveUpdatedEntry(
@@ -163,7 +163,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             updatedHash,
             updatedLink,
-            updatedLicense,
+            updatedCanon,
             0 // deprecateIndex
         );
 
@@ -182,7 +182,7 @@ contract Lit3LedgerTest is Test {
         assertEq(newEntry.curatorNote, updatedNote);
         assertEq(newEntry.contentHash, updatedHash);
         assertEq(newEntry.permawebLink, updatedLink);
-        assertEq(newEntry.license, updatedLicense);
+        assertEq(newEntry.canonMetadata, updatedCanon);
     }
 
     function test_ArchiveUpdatedEntry_RevertWhen_InvalidIndex() public {
@@ -199,7 +199,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE,
+            TEST_CANON_METADATA,
             999
         );
     }
@@ -217,7 +217,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
         
         lit3Ledger.archiveEntry(
@@ -230,7 +230,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
 
         // Deprecate entry 0
@@ -244,7 +244,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE,
+            TEST_CANON_METADATA,
             0
         );
 
@@ -260,7 +260,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE,
+            TEST_CANON_METADATA,
             0
         );
         vm.stopPrank();
@@ -278,7 +278,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
 
         vm.prank(curator);
@@ -295,7 +295,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE,
+            TEST_CANON_METADATA,
             0
         );
     }
@@ -460,7 +460,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
         
         assertEq(lit3Ledger.getTotalEntries(), 1);
@@ -478,7 +478,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
     }
 
@@ -500,7 +500,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
         
         // Archive v2 (deprecate v1)
@@ -514,7 +514,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE,
+            TEST_CANON_METADATA,
             0
         );
         
@@ -529,7 +529,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE,
+            TEST_CANON_METADATA,
             1
         );
         
@@ -576,7 +576,7 @@ contract Lit3LedgerTest is Test {
             TEST_NFT_ID,
             TEST_CONTENT_HASH,
             TEST_PERMAWEB_LINK,
-            TEST_LICENSE
+            TEST_CANON_METADATA
         );
 
         assertEq(lit3Ledger.getTotalEntries(), 1);
@@ -607,7 +607,7 @@ contract Lit3LedgerTest is Test {
                 TEST_NFT_ID,
                 TEST_CONTENT_HASH,
                 TEST_PERMAWEB_LINK,
-                TEST_LICENSE
+                TEST_CANON_METADATA
             );
         }
         vm.stopPrank();
