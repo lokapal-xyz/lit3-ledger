@@ -1,4 +1,4 @@
-specVersion: 0.0.5
+specVersion: 1.2.0
 schema:
   file: ./schema.graphql
 dataSources:
@@ -6,12 +6,12 @@ dataSources:
     name: Lit3Ledger
     network: base-sepolia  # Set the network to base or base-sepolia
     source:
-      address: "0xC88408A3a96Db318C5C79B0F8977eF0E7FE09f22"  # Replace with your deployed contract address
+      address: "0x9A5D36D73d92a21fC81CAFF043eaA670E7Da2543"  # Replace with your deployed contract address
       abi: Lit3Ledger
-      startBlock: 32859043  # Replace with your deployment block
+      startBlock: 35503948  # Replace with your deployment block
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       entities:
         - Entry

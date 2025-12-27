@@ -12,10 +12,10 @@ import {
 } from "../generated/schema"
 
 export function handleEntryArchived(event: EntryArchivedEvent): void {
-  // Create unique ID using transaction hash and log index
-  let entry = new Entry(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  )
+  // ✅ FIXED: Use entryIndex as the entity ID (this is the contract's entry index)
+  // This makes it easy to find and update entries later
+  let entryId = event.params.entryIndex.toString()
+  let entry = new Entry(entryId)
   
   // Map event parameters to entity fields
   entry.entryIndex = event.params.entryIndex
@@ -29,7 +29,7 @@ export function handleEntryArchived(event: EntryArchivedEvent): void {
   entry.nftId = event.params.nftId
   entry.contentHash = event.params.contentHash
   entry.permawebLink = event.params.permawebLink
-  entry.license = event.params.license
+  entry.canonMetadata = event.params.canonMetadata
   entry.deprecated = false
   
   // Add blockchain metadata
@@ -55,10 +55,9 @@ export function handleEntryArchived(event: EntryArchivedEvent): void {
 }
 
 export function handleEntryDeprecated(event: EntryDeprecatedEvent): void {
-  // Update the deprecated entry
-  let deprecatedEntry = Entry.load(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  )
+  // ✅ FIXED: Now we can easily find the deprecated entry by its entryIndex
+  let deprecatedEntryId = event.params.deprecatedIndex.toString()
+  let deprecatedEntry = Entry.load(deprecatedEntryId)
   
   if (deprecatedEntry != null) {
     deprecatedEntry.deprecated = true

@@ -1,4 +1,4 @@
-type Entry @entity(immutable: true) {
+type Entry @entity(immutable: false) {
   id: ID!
   entryIndex: BigInt!
   title: String!
@@ -11,7 +11,7 @@ type Entry @entity(immutable: true) {
   nftId: BigInt!
   contentHash: Bytes!
   permawebLink: String!
-  license: String!
+  canonMetadata: String!
   deprecated: Boolean!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
