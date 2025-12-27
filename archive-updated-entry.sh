@@ -172,7 +172,7 @@ if [ -n "$TEXT_FILE" ]; then
     fi
 
     # Run the normalization and hashing utility
-    HASH_OUTPUT=$(node scripts/hnp1.js "$TEXT_FILE" 2>&1)
+    HASH_OUTPUT=$(node scripts/hnp2.js "$TEXT_FILE" 2>&1)
 
     if [ $? -ne 0 ]; then
         echo -e "${RED}Error during normalization and hashing:${NC}"

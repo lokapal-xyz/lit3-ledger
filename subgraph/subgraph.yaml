@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Lit3Ledger
-    network: base-sepolia  # Set the network to base or base-sepolia
+    network: base  # Set the network to base or base-sepolia
     source:
-      address: "0x9A5D36D73d92a21fC81CAFF043eaA670E7Da2543"  # Replace with your deployed contract address
+      address: "0x48051661a6B1779fe4fB01Caf578e9ca45e4A4f3"  # Replace with your deployed contract address
       abi: Lit3Ledger
-      startBlock: 35503948  # Replace with your deployment block
+      startBlock: 40037836  # Replace with your deployment block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
