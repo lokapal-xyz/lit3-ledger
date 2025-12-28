@@ -153,7 +153,7 @@ The script requires the `--network` flag, but all other parameters are optional 
 | **-d, --nft-id** | NFT token ID | `0` |
 | **-l, --text-file** | Path to a file for content hashing (requires Node.js) | `0x0...0` (zero hash) |
 | **-x, --permaweb-link** | IPFS/Arweave link (e.g., ipfs://Qm...) | `""` (empty string) |
-| **-p, --canon-metadata** | Canon metadata declaration (e.g., 'CC BY-SA 4.0 | HNP-1') | `""` (empty string) |
+| **-p, --canon-metadata** | Canon metadata declaration (e.g., 'CC BY-SA 4.0 / HNP-1') | `""` (empty string) |
 
 #### Examples
 
@@ -497,7 +497,7 @@ The authors and contributors are not responsible for any losses or damages resul
 
 ## License
 
-MIT License - see LICENSE file for details
+MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
